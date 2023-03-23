@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import research.paper.dockerdevcontainers.api.dto.ProductDto;
 import research.paper.dockerdevcontainers.domain.model.Product;
 import research.paper.dockerdevcontainers.service.ProductService;
@@ -26,7 +27,7 @@ public class ProductController {
     String getProductPage(Model model) {
         List<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
-        model.addAttribute("productDto", new ProductDto());
+        model.addAttribute("product", new ProductDto());
         return "ProductList";
     }
 
@@ -36,7 +37,7 @@ public class ProductController {
 //        return ResponseEntity.accepted().body(newProduct);
 //    }
     @PostMapping("/createnewproduct")
-    public String createNewProduct(@ModelAttribute("productDto") ProductDto product) {
+    public String createNewProduct(@ModelAttribute("product") ProductDto product) {
         productService.createNewProduct(product);
         return "redirect:/product/shoppinglist";
 }
@@ -48,10 +49,16 @@ public class ProductController {
         return ResponseEntity.ok(allProducts);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteProduct(@RequestParam Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.accepted().build();
+//    @DeleteMapping()
+//    public ResponseEntity<Void> deleteProduct(@RequestParam Long id) {
+//        productService.deleteProduct(id);
+//        return ResponseEntity.accepted().build();
+//    }
+
+    @PostMapping("/deleteproduct")
+    public String deleteProduct(@RequestParam("productIds") List<Long> ids, RedirectAttributes redirectAttributes) {
+        productService.deleteProducts(ids);
+        redirectAttributes.addFlashAttribute("deletedSuccessfully", "Selected products have been deleted");
+        return "redirect:/product/shoppinglist";
     }
-    
 }

@@ -14,42 +14,76 @@
     </li>
 </ul>
 
+<div th:if="${deletedSuccessfully}" class="alert alert-success" role="alert" id="deletedSuccessfullyMessage">
+    <span th:text="${deletedSuccessfully}"></span>
+</div>
+
 <div class="container">
-    <form class="mt-3 ml-3" th:action="@{/product/createnewproduct}" th:object="${productDto}" method="post">
+    <form class="mt-3 ml-3" th:action="@{/product/createnewproduct}" th:object="${product}" method="post">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputProdName">Product Name</label>
-                <input type="text" class="form-control" id="inputProdName" th:field="*{name}" placeholder="Product Name">
+                <input type="text" class="form-control" id="inputProdName" th:field="*{name}"
+                       placeholder="Product Name">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputProdPrice">Product Price</label>
-                <input type="number" class="form-control" id="inputProdPrice" th:field="*{price}" placeholder="Product Price">
+                <input type="number" class="form-control" id="inputProdPrice" th:field="*{price}"
+                       placeholder="Product Price">
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Add Product</button>
     </form>
 </div>
 
-<div class="container mt-3">
+<div class="container mt-5">
     <h2>Product List</h2>
-    <table class="table table-striped">
-        <thead>
+    <form action="/product/deleteproduct" method="post">
+        <input type="hidden" name="_method" value="DELETE"/>
+        <table class="table table-striped">
+            <thead>
             <tr>
                 <th></th>
                 <th>Name</th>
                 <th>Price</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr th:each="product : ${products}">
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox" name="productIds" th:value="${product.id}"></td>
                 <td th:text="${product.name}"></td>
                 <td th:text="${product.price}"></td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-danger" id="deleteProduct">Delete selected</button>
+    </form>
 </div>
 
 
 </body>
 </html>
+
+
+<script>
+    // {1} Hide Delete button if no rows selected:
+    const deleteButton = document.getElementById("deleteProduct");
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    deleteButton.disabled = true;
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            // If at least one checkbox is checked, enable the delete button
+            if (document.querySelector('input[type="checkbox"]:checked')) {
+                deleteButton.disabled = false;
+            } else {
+                deleteButton.disabled = true;
+            }
+        });
+    });
+
+    // {2} Hide alert message after 3 seconds of being shown:
+    const alertMessage = document.getElementById("deletedSuccessfullyMessage");
+    setTimeout(() => {
+        alertMessage.style.display = "none";
+    }, 3000);
+</script>
