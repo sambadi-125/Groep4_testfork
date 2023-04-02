@@ -1,0 +1,12 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+  },
+  "extensions": [
+    {
+      "name": "vscjava.vscode-java-pack",
+      "publisher": "Microsoft",
+      "version": "0.13.0"
+    }
+  ]
+}
