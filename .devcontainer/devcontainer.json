@@ -8,5 +8,6 @@
       "publisher": "Microsoft",
       "version": "0.13.0"
     }
-  ]
+  ],
+  "postCreateCommand": "az acr login --name <registry-name> && code-server --install-extension vscjava.vscode-java-pack"
 }
